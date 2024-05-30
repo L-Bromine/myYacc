@@ -1,0 +1,134 @@
+MAINTK main
+CONSTTK const
+INTTK int
+BREAKTK break
+CONTINUETK continue
+IFTK if
+ELSETK else
+NOT !
+AND &&
+OR \|\|
+WHILETK while
+GETINTTK getint
+PRINTFTK printf
+RETURNTK return
+PLUS +
+MINU -
+VOIDTK void
+MULT \*
+DIV /
+MOD %
+LSS <
+LEQ <=
+GRE >
+GEQ >=
+EQL ==
+NEQ !=
+ASSIGN =
+SEMICN ;
+COMMA ,
+LPARENT \(
+RPARENT \)
+LBRACK [
+RBRACK ]
+LBRACE {
+RBRACE }
+INTCON (1|2|3|4|5|6|7|8|9|0)(1|2|3|4|5|6|7|8|9|0)*
+IDENFR (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|_)(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|1|2|3|4|5|6|7|8|9|0|_)*
+STRCON "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|1|2|3|4|5|6|7|8|9|0|_|\\|\*|\(|\)|[|]|{|}|\||+|-|/|!|$|%|^|&|=|#| |:|.|,)*"
+no1 //(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|1|2|3|4|5|6|7|8|9|0|_|\\|\*|\(|\)|[|]|{|}|\||+|-|/|!|$|%|^|&|=|#| |:|.|,)*\n
+no2 /\*((a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|1|2|3|4|5|6|7|8|9|0|_|\\|\(|\)|[|]|{|}|\||+|-|!|$|%|^|&|=|#| |\n|/)|(\*\**(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|1|2|3|4|5|6|7|8|9|0|_|\\|\(|\)|[|]|{|}|\||+|-|!|$|%|^|&|=|#| |\n)))*\*\**/
+
+CompUnit -> {Decl} {FuncDef} MainFuncDef
+| {FuncDef} MainFuncDef
+| {Decl} MainFuncDef
+| MainFuncDef
+{Decl} -> Decl | {Decl} Decl
+{FuncDef} -> FuncDef | {FuncDef} FuncDef
+Decl -> ConstDecl | VarDecl
+ConstDecl -> CONSTTK BType ConstDef {COMMA_ConstDef} SEMICN
+| CONSTTK BType ConstDef SEMICN
+{COMMA_ConstDef} -> COMMA ConstDef | {COMMA_ConstDef} COMMA ConstDef
+BType -> INTTK
+ConstDef -> IDENFR {LBRACK_ConstExp_RBRACK} ASSIGN ConstInitVal
+| IDENFR ASSIGN ConstInitVal
+{LBRACK_ConstExp_RBRACK} -> LBRACK ConstExp RBRACK
+| {LBRACK_ConstExp_RBRACK} LBRACK ConstExp RBRACK
+ConstInitVal -> ConstExp
+| LBRACE RBRACE
+| LBRACE _ConstInitVal_{COMMA_ConstInitVal} RBRACE
+_ConstInitVal_{COMMA_ConstInitVal} -> ConstInitVal | ConstInitVal {COMMA_ConstInitVal}
+{COMMA_ConstInitVal} -> COMMA ConstInitVal | {COMMA_ConstInitVal} COMMA ConstInitVal
+VarDecl -> BType VarDef {COMMA_VarDef} SEMICN
+| BType VarDef SEMICN
+{COMMA_VarDef} -> COMMA VarDef | {COMMA_VarDef} COMMA VarDef
+VarDef -> IDENFR {LBRACK_ConstExp_RBRACK}
+| IDENFR
+| IDENFR {LBRACK_ConstExp_RBRACK} ASSIGN InitVal
+| IDENFR ASSIGN InitVal
+InitVal -> Exp
+| LBRACE _InitVal_{COMMA_InitVal} RBRACE
+| LBRACE RBRACE
+_InitVal_{COMMA_InitVal} -> InitVal | InitVal {COMMA_InitVal}
+{COMMA_InitVal} -> COMMA InitVal | {COMMA_InitVal} COMMA InitVal
+FuncDef -> FuncType IDENFR LPARENT FuncFParams RPARENT Block
+| FuncType IDENFR LPARENT RPARENT Block
+| BType IDENFR LPARENT FuncFParams RPARENT Block
+| BType IDENFR LPARENT RPARENT Block
+FuncFParams -> FuncFParam {COMMA_FuncFParam}
+| FuncFParam
+{COMMA_FuncFParam} -> {COMMA_FuncFParam} COMMA FuncFParam | COMMA FuncFParam
+FuncFParam -> BType IDENFR LBRACK RBRACK {LBRACK_ConstExp_RBRACK}
+| BType IDENFR LBRACK RBRACK
+| BType IDENFR
+MainFuncDef -> INTTK MAINTK LPARENT RPARENT Block
+FuncType -> VOIDTK
+FuncFParams -> FuncFParam {COMMA_FuncFParam} | FuncFParam
+FuncFParam -> BType IDENFR LBRACK RBRACK {LBRACK_ConstExp_RBRACK}
+{COMMA_FuncFParam} -> COMMA FuncFParam | {COMMA_FuncFParam} COMMA FuncFParam
+| BType IDENFR
+Block -> LBRACE {BlockItem} RBRACE
+| LBRACE RBRACE
+{BlockItem} -> BlockItem | {BlockItem} BlockItem
+BlockItem -> Decl | Stmt
+Stmt -> LVal ASSIGN Exp SEMICN
+| Exp SEMICN
+| SEMICN
+| Block
+| IFTK LPARENT Cond RPARENT _Stmt_ELSETK_Stmt
+| WHILETK LPARENT Cond RPARENT Stmt
+| BREAKTK SEMICN | CONTINUETK SEMICN
+| RETURNTK Exp SEMICN
+| RETURNTK SEMICN
+| LVal ASSIGN GETINTTK LPARENT RPARENT SEMICN
+| PRINTFTK LPARENT _FormatString_{COMMA_Exp} RPARENT SEMICN
+_Stmt_ELSETK_Stmt -> Stmt ELSETK Stmt | Stmt
+_FormatString_{COMMA_Exp} -> STRCON | STRCON {COMMA_Exp}
+{COMMA_Exp} -> COMMA Exp | {COMMA_Exp} COMMA Exp
+Exp -> AddExp
+Cond -> LOrExp
+LVal -> IDENFR {LBRACK_Exp_RBRACK}
+| IDENFR
+{LBRACK_Exp_RBRACK} -> LBRACK Exp RBRACK | {LBRACK_Exp_RBRACK} LBRACK Exp RBRACK
+PrimaryExp -> LPARENT Exp RPARENT | LVal | Number
+Number -> INTCON
+UnaryExp -> PrimaryExp
+| IDENFR LPARENT FuncRParams RPARENT
+| IDENFR LPARENT RPARENT
+| UnaryOp UnaryExp
+UnaryOp -> PLUS | MINU | NOT
+FuncRParams -> Exp {COMMA_Exp} | Exp
+MulExp -> UnaryExp
+| MulExp MulOpt UnaryExp
+MulOpt -> MULT | DIV | MOD
+AddExp -> MulExp
+| AddExp AddOpt MulExp
+AddOpt -> PLUS | MINU
+RelExp -> AddExp | RelExp RelOpt AddExp
+RelOpt -> LSS | LEQ | GRE | GEQ
+EqExp -> RelExp
+| EqExp EqOpt RelExp
+EqOpt -> EQL | NEQ
+LAndExp -> EqExp | LAndExp AND EqExp
+LOrExp -> LAndExp | LOrExp OR LAndExp
+ConstExp -> AddExp
